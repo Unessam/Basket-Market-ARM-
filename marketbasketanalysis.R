@@ -56,3 +56,70 @@ rules<- apriori(marketbasket, parameter = list(minlen=2, maxlen=3, conf=0.7),
 rules
 summary(rules)
 inspect(rules)
+# visualizing rules
+install.packages('arulesViz')
+library(arulesViz)
+
+plot(rules)
+plot(rules, method = "grouped")
+plot(rules@quality, col='red', pch=19)
+?plotly_arules
+rules3 <- apriori(marketbasket,
+                  parameter = list(minlen=2,maxlen=4, conf = 0.60),
+                  appearance =list(rhs=c("banana=1","apples=1","avocado=1")
+                                   ,default="lhs") )
+#interactive plot
+plot(rules3, engine = "plotly")
+
+#changing measures 
+plot(rules3, engine= 'plotly', measure = c("support", "lift"), shading = "confidence")
+
+#filtering only purchased items:
+rules2 <- apriori(marketbasket,
+                  parameter = list(minlen=2, maxlen=3,conf = 0.7),
+                  appearance =list(rhs=c("cosmetics=1"),
+                                   lhs=c("apples=1",
+                                         "banana=1",
+                                         "coke=1",
+                                         "turkey=1",
+                                         "bourbon=1",
+                                         "ice_cream=1",
+                                         "baguette=1",
+                                         "soda=1",
+                                         "choclate=1",
+                                         "cracker=1",
+                                         "avocado=1",
+                                         "sardines=1"),
+                                   default="none"))
+inspect(rules2)
+plot(rules2, engine='plotly')
+plot(rules2)
+# lowering confident parameter to observe more rules
+rules4 <- apriori(marketbasket,
+                  parameter = list(minlen=2, maxlen=3,conf = 0.5),
+                  appearance =list(rhs=c("cosmetics=1"),
+                                   lhs=c("apples=1",
+                                         "banana=1",
+                                         "coke=1",
+                                         "turkey=1",
+                                         "bourbon=1",
+                                         "ice_cream=1",
+                                         "baguette=1",
+                                         "soda=1",
+                                         "choclate=1",
+                                         "cracker=1",
+                                         "avocado=1",
+                                         "sardines=1"),
+                                   default="none"))
+inspect(rules4)
+plot(rules4, engine='plotly')
+#Explore association rules using interactive manipulations and
+# visualization using shiny
+?ruleExplorer
+rules_ex <-apriori(marketbasket,
+                   parameter =list(minlen=2,maxlen=4,conf=0.75))
+
+install.packages('shinythemes')
+library(shinythemes)
+ruleExplorer(rules_ex)
+
